@@ -1,0 +1,116 @@
+MainLayout:
+    Image:
+        id:imageView
+        source:r"resources\model_data\iamges_icons\Object-Detection-using-SSD(1).jpg"
+    Button:
+        pos_hint:{"x":0.01,"top":0.98}
+        size_hint:None,0.07
+        width:self.height
+        background_color: 0, 0, 0, 0
+        on_release:root.on_draw_request()
+        Image:
+            source: r"C:\Users\Dell\Downloads\menu_icon.png"
+            pos:self.parent.pos
+            size: self.parent.size
+            allow_stretch: True
+    NavigrationDrawer
+        id:nav_drawer
+        size_hint:None,1
+        width:dp(150)
+        pos:-self.size[0],0
+    
+
+
+
+<NavigrationDrawer@BoxLayout>
+    canvas:
+        Color:
+            rgb: .4,.4,.4
+        Rectangle:
+            size:root.size
+            pos:root.pos
+        Color:
+            rgba: 1,1,1, 1
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+    orientation:"vertical"
+    padding:dp(5)
+    Label:
+        size_hint:1,None
+        height:dp(30) 
+    Button:
+        size_hint:1,None
+        height:dp(40)
+        text:"new"
+        on_release:root.parent.on_new_prompt()
+        canvas:
+            Color:
+                rgba: 1,1,1, 1
+            Line:
+                width: 1
+                rectangle: self.x, self.y, self.width, self.height
+    BoxLayout:
+        size_hint:.94,None
+        height:dp(80)
+        Label:
+            text: "Detect"
+            halign:"left"
+        Switch:
+            on_active: root.parent.detect=self.active
+            active: root.parent.detect
+    Label:
+        text:""
+
+
+<LoadDialog>:
+    size_hint: None,None
+    pos_hint : {"center_x": .5, "center_y": .5}
+    on_dismiss: root.cancel()
+    RelativeLayout:
+        size_hint:.8,.8
+        BoxLayout:
+            orientation:"vertical"
+            size_hint:.7,.15
+            pos_hint:{"center_x":.5,"center_y":.8}
+            Label:
+                text_size:self.size
+                halign:"left"
+                valign:"middle"
+                text:"From Local Storage"
+            BoxLayout:
+                TextInput:
+                    size_hint:.7,1
+                    text:""
+                    on_focus: Clock.schedule_once(lambda dt: self.select_all(),0.25) if self.focus else None
+                Button:
+                    size_hint:.2,1
+                    text:"Browse"
+                    on_press:root.load_file()
+        Button:
+            text: "WebCam"
+            size_hint:.7,.1
+            pos_hint:{"center_x":.5,"center_y":.5}
+            on_release:root.load_webcam()
+        BoxLayout:
+            orientation:"vertical"
+            size_hint:.7,.15
+            pos_hint:{"center_x":.5,"center_y":.3}
+            Label:
+                text_size:self.size
+                halign:"left"
+                valign:"middle"
+                text:"From Web"
+            BoxLayout:
+                
+                TextInput:
+                    size_hint:.7,1
+                    text:"http://192.168.1.5:8080/shot.jpg"
+                    id:url_input
+                    multiline:False
+                    #on_focus: Clock.schedule_once(lambda dt: self.select_all(),0.25) if self.focus else None
+                    on_text_validate: root.load_url(self.text)
+                Button:
+                    size_hint:.2,1
+                    text:"load"
+                    on_press: root.load_url(url_input.text)
